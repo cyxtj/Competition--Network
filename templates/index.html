@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+{{super()}}
+<!--<script src="static/lib/echart/echarts.js"></script>-->
+<script src="static/lib/echart/echarts-all.js"></script>
+<script src="/static/js/linechart.js"></script>
+<script src="/static/lib/back-to-top/main.js"></script>
+{% endblock scripts%}
+
+{% block styles %}
+{{super()}}
+<link href="/static/lib/back-to-top/style.css" rel="stylesheet">
+{% endblock styles%}
+
+{% block title %}MLDM-Baidu{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+	<h1>HHI-CPC correlation in each sector.</h1>
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+  <div class="btn-group" data-toggle="buttons">
+
+      <div class="col-md-12">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+						<th> 显示 </th>
+                        {% for head in heads %}
+                        <th>{{ head }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in table %}
+                    <tr data-toggle="tooltip" data-placement="top" title="{{sector23[row[0]]}}" data-container="body">
+						<td><input type="radio" name="sector-radio" onclick="draw(this)" id={{row[0]}}></td>
+                        <td>{{row[0]}}</td>
+						<td >{{row[1]}}</td>
+						
+						{% for entry in row[2:] %}
+                        <td>{{ entry }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor%}
+                </tbody>
+            </table>
+        </div>
+	</div>
+	</div>
+	<div class="row">
+        <div class="col-md-10">
+            <div id="main" style="height:500px">
+            </div>
+        </div>
+  </div>
+</div>
+<a href="#0" class="cd-top">Top</a>
+{% endblock %}
