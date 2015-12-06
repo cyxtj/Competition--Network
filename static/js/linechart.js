@@ -1,6 +1,7 @@
 
-var current_sectorid = 0;
-
+var current_sectorid = 5101;
+var xfeature = 'HHI';
+var yfeature = 'CPC';
 // 基于准备好的dom，初始化echarts图表
 var myChart = echarts.init(document.getElementById('main'));
 var option_data = {
@@ -8,13 +9,41 @@ var option_data = {
 	main_data : []
 };
 var option = {
+	
+};
+
+
+function change_sectorid(e) {
+	// Draw the HHI-CPC figure,
+	// called when click the radio input.
+	var sectorid = Number(e.getAttribute("id"));
+    current_sectorid = sectorid;
+    console.log(current_sectorid);
+	request_fresh();
+};
+
+function request_fresh(){
+	var data = {'sectorid': current_sectorid, 'xfeature': xfeature, 'yfeature': yfeature};
+	$.getJSON('get_option', data, function (option_data, status) {
+        fresh(option_data)
+	});
+	// scroll to figure
+	window.scroll(0, findPos(document.getElementById("main")));
+}
+
+function fresh(option_data){
+    /* option.title.text = option_data.title;
+    option.title.subtext = option_data.subtitle;
+    option.legend.data = option_data.legends;
+    option.series[0].data = option_data.main_series; */
+	option = {
 	title : {
-		text : 'HHI-CPC each week'+option_data.Title,
-        subtext : option_data.Subtitle
+		text : xfeature + '-' + yfeature + ' each week ' + option_data.title,
+        subtext : option_data.subtitle, 
 	},
 	tooltip : {
 		formatter : function (params) {
-			return 'week: ' + params.value[2] + '<br/> HHI: ' + params.value[0] + '<br/> CPC: ' + params.value[1];
+			return 'week: ' + params.value[2] + '<br/> ' + xfeature +': ' + params.value[0] + '<br/> ' + yfeature + ': ' + params.value[1];
 		}
 	},
 	legend : {
@@ -49,13 +78,13 @@ var option = {
 	calculable : true,
 	xAxis : [{
 			type : 'value',
-			name : 'HHI',
+			name : xfeature,
 		}
 	],
 	yAxis : [{
 			type : 'value',
 			scale : false,
-			name : 'CPC',
+			name : yfeature,
 		}
 	],
 	series : [{
@@ -106,26 +135,6 @@ var option = {
 		}, ]
 };
 
-
-function draw(e) {
-	// Draw the HHI-CPC figure,
-	// called when click the radio input.
-	var sectorid = e.getAttribute("id");
-    current_sectorid = sectorid;
-    console.log(current_sectorid);
-	$.getJSON('get_option/' + sectorid, function (option_data, status) {
-        fresh(option_data)
-	});
-	// scroll to figure
-	window.scroll(0, findPos(document.getElementById("main")));
-
-};
-
-function fresh(option_data){
-    option.title.text = option_data.title;
-    option.title.subtext = option_data.subtitle;
-    option.legend.data = option_data.legends;
-    option.series[0].data = option_data.main_series;
     myChart.setOption(option);
 }
 function findPos(obj) {
@@ -141,5 +150,17 @@ function findPos(obj) {
 
 
 $(function () {
+	// init tooltips
   $('[data-toggle="tooltip"]').tooltip()
 })
+
+function change_xfeature(e){
+	xfeature = e.getAttribute("id");
+	console.log(xfeature);
+	request_fresh();
+}
+function change_yfeature(e){
+	yfeature = e.getAttribute("id");
+	console.log(yfeature);
+	request_fresh();
+}

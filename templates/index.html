@@ -21,42 +21,83 @@
 </div>
 
 <div class="container-fluid">
-  <div class="row">
-  <div class="btn-group" data-toggle="buttons">
-
-      <div class="col-md-12">
-            <table class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-						<th> 显示 </th>
-                        {% for head in heads %}
-                        <th>{{ head }}</th>
-                        {% endfor %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for row in table %}
-                    <tr data-toggle="tooltip" data-placement="top" title="{{sector23[row[0]]}}" data-container="body">
-						<td><input type="radio" name="sector-radio" onclick="draw(this)" id={{row[0]}}></td>
-                        <td>{{row[0]}}</td>
-						<td >{{row[1]}}</td>
-						
-						{% for entry in row[2:] %}
-                        <td>{{ entry }}</td>
-                        {% endfor %}
-                    </tr>
-                    {% endfor%}
-                </tbody>
-            </table>
-        </div>
-	</div>
+	
+	
+	
+	<div class="row">
+		<div class="  col-md-8">
+			 <div class="panel panel-default"> 
+				<div class="panel-heading"><h3>Indeices of each sector</h3></div>
+				<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th> 显示 </th>
+							<th>{{ heads[0] }}</th>
+							<th>{{ heads[1] }}</th>
+							{% for head in heads[2:] %}
+							<th>{{ head }}</th>
+							{% endfor %}
+						</tr>
+					</thead>
+					<tbody>
+						{% for row in table %}
+						<tr data-toggle="tooltip" data-placement="top" title="{{sector23[row[0]]}}" data-container="body">
+							<td><input type="radio" name="sector-radio" onclick="change_sectorid(this)" id={{row[0]}}></td>
+							<td>{{row[0]}}</td>
+							<td >{{row[1]}}</td>
+							
+							{% for entry in row[2:] %}
+							<td>{{ entry }}</td>
+							{% endfor %}
+						</tr>
+						{% endfor%}
+					</tbody>
+				</table>
+				
+			</div>
+		</div>
 	</div>
 	<div class="row">
-        <div class="col-md-10">
-            <div id="main" style="height:500px">
-            </div>
+        <div class="col-md-8">
+            <div id="main" style="height:500px"> </div>
         </div>
   </div>
+  
+  <div class="input-group">
+		<span  class="text-info"> Feature on x-axis:  </span>
+		<div class="btn-group btn-group-xs" data-toggle="buttons">
+			
+			{% for feature in features %}
+			{% if feature == 'HHI'%}
+			<label class="btn btn-default active" id={{feature}} onclick="change_xfeature(this)">
+				<input type="radio" name="xoptions" checked > {{feature}}
+			</label>
+			{% else %}
+			<label class="btn btn-default" id={{feature}} onclick="change_xfeature(this)">
+				<input type="radio" name="xoptions" > {{feature}}
+			</label>
+			{% endif %}
+			{% endfor %}
+		</div>
+	</div>
+	</br>
+	<div class="input-group">
+		<span class="text-info"> Feature on y-axis:  </span>
+		<div class="btn-group btn-group-xs" data-toggle="buttons">
+			{% for feature in features %}
+			{% if feature == 'CPC'%}
+			<label class="btn btn-default active" id={{feature}} onclick="change_yfeature(this)">
+				<input type="radio" name="yoptions" checked > {{feature}}
+			</label>
+			{% else %}
+			<label class="btn btn-default " id={{feature}} onclick="change_yfeature(this)">
+				<input type="radio" name="yoptions" > {{feature}}
+			</label>
+			{% endif %}
+			{% endfor %}
+		</div>
+	</div>
+	</br>
 </div>
 <a href="#0" class="cd-top">Top</a>
 {% endblock %}
