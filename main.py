@@ -41,7 +41,7 @@ def get_option():
     idx = sector_week_index.SECTOR == sectorid
     d = sector_week_index[idx]
     opt = dict()
-    main_series = d[[xfeature, yfeature, 'WEEK']].values.tolist()
+    main_series = d[[xfeature, yfeature, 'WEEK', 'week_start_date', 'week_end_date']].values.tolist()
     opt['xfeature'] = xfeature
     opt['yfeature'] = xfeature
     opt['main_series'] = main_series

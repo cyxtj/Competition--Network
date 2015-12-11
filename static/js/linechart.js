@@ -43,7 +43,7 @@ function fresh(option_data){
 	},
 	tooltip : {
 		formatter : function (params) {
-			return 'week: ' + params.value[2] + '<br/> ' + xfeature +': ' + params.value[0] + '<br/> ' + yfeature + ': ' + params.value[1];
+			return 'week: ' +params.value[2] + ', <br/>date: ' + params.value[3] + '-' + params.value[4] + '<br/> ' + xfeature +': ' + params.value[0] + '<br/> ' + yfeature + ': ' + params.value[1];
 		}
 	},
 	legend : {
