@@ -13,24 +13,22 @@ var option = {
 };
 
 
-function change_sectorid(e) {
-	// Draw the HHI-CPC figure,
-	// called when click the radio input.
-	var sectorid = Number(e.getAttribute("id"));
-    current_sectorid = sectorid;
-    console.log(current_sectorid);
-	request_fresh();
-};
 
-function request_fresh(){
+// request the data to show according to : current_sectorid, xfeature, yfeature
+// and the refresh the figure.
+function request_fresh(scroll){
 	var data = {'sectorid': current_sectorid, 'xfeature': xfeature, 'yfeature': yfeature};
 	$.getJSON('get_option', data, function (option_data, status) {
         fresh(option_data)
 	});
 	// scroll to figure
-	window.scroll(0, findPos(document.getElementById("main")));
+	if(scroll==true){
+		window.scroll(0, findPos(document.getElementById("main")));
+	}
+	
 }
 
+// refresh the figure accoarding to option_data
 function fresh(option_data){
     /* option.title.text = option_data.title;
     option.title.subtext = option_data.subtitle;
@@ -137,6 +135,8 @@ function fresh(option_data){
 
     myChart.setOption(option);
 }
+
+// scroll the window to the given obj.
 function findPos(obj) {
 	//Finds y value of given object
 	var curtop = 0;
@@ -154,13 +154,32 @@ $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 })
 
+// when click radio button of one sector, change the sector to draw.
+function change_sectorid(e) {
+	var sectorid = Number(e.getAttribute("id"));
+    current_sectorid = sectorid;
+    console.log(current_sectorid);
+	request_fresh(true);
+};
+// when click radio button of one sector, change the sector to draw.
+function change_sectorid_short(e) {
+	var sectorid = Number(e.getAttribute("id"));
+    current_sectorid = sectorid;
+    console.log(current_sectorid);
+	request_fresh(false);
+};
+
+
+// when click button on "Feature of x-axis", change the x feature to draw
 function change_xfeature(e){
 	xfeature = e.getAttribute("id");
 	console.log(xfeature);
-	request_fresh();
+	request_fresh(true);
 }
+
+// when click button on "Feature of y-axis", change the y feature to draw
 function change_yfeature(e){
 	yfeature = e.getAttribute("id");
 	console.log(yfeature);
-	request_fresh();
+	request_fresh(true);
 }

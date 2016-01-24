@@ -1,34 +1,38 @@
 # coding=utf-8
-
-from flask import Flask, render_template, request
-from flask.ext.bootstrap import Bootstrap
-import pandas as pd
-import json
-
-
-app = Flask(__name__)
-bootstrap = Bootstrap(app)
-
-t = pd.read_excel('index-each-sector.xls', 'Sheet1')
-t.SECTOR = t.SECTOR.astype(int)
-for col in t.columns[2:]:
-    t[col] = t[col].round(2)
-
-sector_week_index = pd.read_excel('index-each-sector-week.xlsx', 'Sheet1')
-sector_week_index['HHI'] = sector_week_index['HHI'].round(2)
-sector_week_index['CPC'] = sector_week_index['CPC'].round(2)
-
-sector2_3 = pd.read_excel('sector23.xlsx', 'Sheet1')
-sector23_dict = {i[1][0]: i[1][1] for i in sector2_3.iterrows()}
+from init import *
 
 @app.route('/')
 def index():
-    global t
     return render_template('index.html', heads=t.columns, table=t.values, sector23 = sector23_dict, features=sector_week_index.columns)
+
+@app.route('/all')
+def all_sectors():
+    return render_template('explore_all_sector.html', heads=t.columns, table=t.values, sector23 = sector23_dict, features=sector_week_index.columns)
+
+
+@app.route('/one')
+def one_sector():
+    return render_template('explore_one_sector.html', heads=t.columns, table=t.values, sector23 = sector23_dict, features=sector_week_index.columns)
+
+@app.route('/get_option_all_sector')
+def get_option_all_sector():
+    print '-------------get_option_all_sector-----------------'
+    print request.args.to_dict()
+    print '------------------------------'
+    xfeature = request.args['xfeature']
+    yfeature = request.args['yfeature']
+    opt = dict()
+    opt['main_series'] = {}
+    for sectorid in sectors:
+        one_sector = grouped.get_group(sectorid)[[xfeature, yfeature, 'SECTOR', 'WEEK']].values.tolist()
+        opt['main_series'][sectorid] = one_sector
+    opt['xfeature'] = xfeature
+    opt['yfeature'] = xfeature
+    opt['legends'] = sectors
+    return json.dumps(opt)
 
 @app.route('/get_option')
 def get_option():
-    global t
     print '------------------------------'
     print request.args
     print request.args.to_dict()

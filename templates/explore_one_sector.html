@@ -1,0 +1,144 @@
+{% extends "index.html" %}
+
+{% block scripts %}
+{{super()}}
+<script src="/static/js/linechart.js"></script>
+{% endblock scripts%}
+
+{% block page_content %}
+<div class="page-header">
+	<h1>Measures correlation in each sector.</h1>
+</div>
+
+<div class="container-fluid">
+
+	<!-- table that shows some propeties of all sectors -->
+	<div class="row">
+		<div class="  col-md-8">
+			 <div class="panel panel-default"> 
+				<div class="panel-heading"><h3>Indeices of each sector</h3></div>
+				<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th> 显示 </th>
+							<th>{{ heads[0] }}</th>
+							<th>{{ heads[1] }}</th>
+							{% for head in heads[2:] %}
+							<th>{{ head }}</th>
+							{% endfor %}
+						</tr>
+					</thead>
+					<tbody>
+						{% for row in table %}
+						<tr data-toggle="tooltip" data-placement="top" title="{{sector23[row[0]]}}" data-container="body">
+							<td><input type="radio" name="sector-radio" onclick="change_sectorid(this)" id={{row[0]}}></td>
+							<td>{{row[0]}}</td>
+							<td >{{row[1]}}</td>
+							
+							{% for entry in row[2:] %}
+							<td>{{ entry }}</td>
+							{% endfor %}
+						</tr>
+						{% endfor%}
+					</tbody>
+				</table>
+				
+			</div>
+		</div>
+	</div>
+
+	<!--quick change current sector-->
+	<div class="row">
+        <div class="col-md-12">
+			<div class="btn-group btn-group-xs" data-toggle="buttons">
+			{% for row in table %}
+			<label class="btn btn-default" id={{row[0]}} onclick="change_sectorid_short(this)">
+				<input type="radio" name="sector-short-button" > {{row[0]}}
+			</label>
+			{% endfor%}
+			</div>
+        </div>
+	</div>
+	
+	<!-- drawing area-->
+	<div class="row">
+        <div class="col-md-8">
+            <div id="main" style="height:500px; margin-top:30px"> </div>
+        </div>
+	</div>
+  
+	<!--change x and y feature to draw-->
+	<div class="row">
+        <div class="col-md-12">
+			<div class="input-group">
+				<span  class="text-info"> Feature on x-axis:  </span>
+				<div class="btn-group btn-group-xs" data-toggle="buttons">
+					
+					{% for feature in features %}
+					{% if feature == 'HHI'%}
+					<label class="btn btn-default active" id={{feature}} onclick="change_xfeature(this)">
+						<input type="radio" name="xoptions" checked > {{feature}}
+					</label>
+					{% else %}
+					<label class="btn btn-default" id={{feature}} onclick="change_xfeature(this)">
+						<input type="radio" name="xoptions" > {{feature}}
+					</label>
+					{% endif %}
+					{% endfor %}
+				</div>
+			</div>
+			</br>
+			<div class="input-group">
+				<span class="text-info"> Feature on y-axis:  </span>
+				<div class="btn-group btn-group-xs" data-toggle="buttons">
+					{% for feature in features %}
+					{% if feature == 'CPC'%}
+					<label class="btn btn-default active" id={{feature}} onclick="change_yfeature(this)">
+						<input type="radio" name="yoptions" checked > {{feature}}
+					</label>
+					{% else %}
+					<label class="btn btn-default " id={{feature}} onclick="change_yfeature(this)">
+						<input type="radio" name="yoptions" > {{feature}}
+					</label>
+					{% endif %}
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+	</br>
+	
+	<!-- table that describ the features that used-->
+	<div class="row">
+        <div class="col-md-12">
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr><th>Feature name</th><th>Description</th></tr>
+				</thead>
+				<tbody>
+					<tr><td>WEEK</td> <td></td></tr>
+					<tr><td>SECTOR</td> <td>sector-id</td></tr>
+					<tr><td>HHI</td> <td>Click数的HHI</td></tr>
+					<tr><td>CCI</td> <td>Click数的CCI</td></tr>
+					<tr><td>ENTROPY</td> <td>Click数的ENTROPY</td></tr>
+					<tr><td>HHI_COST</td> <td>Cost的HHI</td></tr>
+					<tr><td>CCI_COST</td> <td>Cost的CCI</td></tr>
+					<tr><td>ENTROPY_COST</td> <td>Cost的ENTROPY</td></tr>
+					<tr><td>EVALUE_ADJ</td> <td>邻接矩阵的最大特征值</td></tr>
+					<tr><td>EVALUE_WEI</td> <td>带权重（相同词数）的邻接矩阵的最大特征值</td></tr>
+					<tr><td>NCLICKS</td> <td>点击数</td></tr>
+					<tr><td>NUSERS</td> <td>有show的广告主数</td></tr>
+					<tr><td>REVENUE</td> <td>总收入</td></tr>
+					<tr><td>CPC</td> <td>CPC</td></tr>
+					<tr><td>T_EFF_D</td> <td>user-word图的有效直径</td></tr>
+					<tr><td>U_EFF_D</td> <td>user-user图的有效直径</td></tr>
+					<tr><td>U_CC</td> <td>user-user图的聚度系数</td></tr>
+					<tr><td>T_DIAM</td> <td>user-word图的直径</td></tr>
+					<tr><td>U_DIAM</td> <td>user-user图的直径</td></tr>
+				</tbody>
+			</table>
+		</div>
+	</div>		
+</div>
+<a href="#0" class="cd-top">Top</a>
+{% endblock %}
