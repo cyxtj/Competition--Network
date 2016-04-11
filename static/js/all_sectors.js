@@ -1,48 +1,67 @@
 
-var xfeature = 'HHI';
+var xfeature = 'userPer_80perClick';
 var yfeature = 'CPC';
 // 基于准备好的dom，初始化echarts图表
-var myChart = echarts.init(document.getElementById('main'));
+var mainChart = echarts.init(document.getElementById('main'));
+var corrChart = echarts.init(document.getElementById('corr-fig'));
+var corrCdfChart = echarts.init(document.getElementById('corr-cdf'));
+
 request_fresh();
-var col_index = {'X':0, 'Y':1, 'SECTOR':2, 'WEEK':3};
+var main_col_index = {'X':0, 'Y':1, 'SECTOR':2, 'WEEK':3};
 var xaxis_type = 'value';
 var yaxis_type = 'value';
-var OPTION_DATA = {};
+var main_option = {};
+var corr_option = {};
+var corr_cdf_option = {};
+
+
 
 // request the data to show according to : current_sectorid, xfeature, yfeature
 // and the refresh the figure.
 function request_fresh(scroll){
+	mainChart.showLoading();
 	var data = {'xfeature': xfeature, 'yfeature': yfeature};
-	$.getJSON('get_option_all_sector', data, function (option_data, status) {
-		OPTION_DATA = option_data;
-        fresh(option_data)
+	$.getJSON('get_option_all_sector', data, function (d, status) {
+        fresh(d);
+		fresh_corr(d);
+		fresh_corr_cdf(d);
 	});
+	mainChart.hideLoading();
 	// scroll to figure
 	if(scroll==true){
 		window.scroll(0, findPos(document.getElementById("main")));
 	}
-	
 }
 
 // refresh the figure accoarding to option_data
 function fresh(option_data){
-	option = {
+main_option = {
+	grid: {
+        x: '5%',
+        x2: 150,
+        y: '18%',
+        y2: '10%'
+    },
 	title : {
-		text : xfeature + '-' + yfeature + ' each week ' + option_data.title,
-        subtext : option_data.subtitle, 
+		text :  '图1：' + xfeature + ' - ' + yfeature ,
 	},
 	tooltip : {
 		formatter : function (params) {
-			return 'Sector: ' + params.value[col_index.SECTOR] + '<br/> ' +
-					'week: ' + params.value[col_index.WEEK] + '<br/> ' + 
-					xfeature +': ' + params.value[col_index.X] + '<br/> ' + 
-					yfeature + ': ' + params.value[col_index.Y];
+			return 'Sector: ' + params.value[main_col_index.SECTOR] + '<br/> ' +
+					'week: ' + params.value[main_col_index.WEEK] + '<br/> ' + 
+					xfeature +': ' + params.value[main_col_index.X] + '<br/> ' + 
+					yfeature + ': ' + params.value[main_col_index.Y];
 		}
 	},
 	animation: false,
-	/*legend : {
-		data : option_data.legends
-	},*/
+	legend : {
+		show : true,
+		data : option_data.legend, 
+		left : 'right', 
+		orient : 'vertical', 
+		itemGap : 5, 
+		itemHeight : 10
+	},
 	toolbox : {
 		show : true,
 		feature : {
@@ -61,6 +80,26 @@ function fresh(option_data){
 		}
 	},
 
+	dataZoom: [
+        {
+            type: 'slider',
+            show: true,
+			realtime : false, 
+            xAxisIndex: [0],
+            start: 0,
+            end: 100
+        },
+        {
+            type: 'slider',
+            show: true,
+			realtime : false, 
+            yAxisIndex: [0],
+            left: '93%',
+            start: 0,
+            end: 100
+        }
+    ],
+	
 	calculable : true,
 	xAxis : [{
 			type : xaxis_type,
@@ -69,14 +108,14 @@ function fresh(option_data){
 	],
 	yAxis : [{
 			type : yaxis_type,
-			scale : false,
+			//scale : false,
 			name : yfeature,
 		}
 	],
-	series : series_gen(option_data.legends, option_data.main_series),
+	series : series_gen(option_data.legend, option_data.main_series),
 	};
-
-    myChart.setOption(option);
+	mainChart.hideLoading();
+    mainChart.setOption(main_option);
 }
 
 
@@ -90,9 +129,9 @@ function series_gen(sectors, all_sectors_data){
 			type : 'scatter',
 			//symbol : 'circle',
 			large : true,
-			
+			symbolSize: 3,
 			data : all_sectors_data[sectorid],
-			color: '#ff0000',
+			//color: '#ff0000',
 		}
 		series.push(one_sector_option);
 	}
@@ -129,9 +168,174 @@ function change_yfeature(e){
 
 function change_xaxis_type(type){
 		xaxis_type = type;
-		fresh(OPTION_DATA);
+		fresh(main_option);
 }
 function change_yaxis_type(type){
 		yaxis_type = type;
-		fresh(OPTION_DATA);
+		fresh(main_option);
+}
+
+
+/**
+/* figure 'corr-fig' draw the correlation between xfeature and yfeature of each sector
+**/
+// refresh the figure accoarding to option_data
+function fresh_corr(option_data){
+corr_option = {
+	grid: {
+        x: '5%',
+        x2: 150,
+        y: '18%',
+        y2: '10%'
+    },
+	title : {
+		text :  '图2：' + xfeature + ' - ' + yfeature + ' pearson correlation of each sector',
+	},
+	tooltip : {
+		formatter : function (params) {
+			return 'Sector: ' + params.value[0] + '<br/> ' +
+					'corr: ' + params.value[1] + '<br/> ' +
+					'p-value' +': ' + params.value[2] + '<br/> ' + 
+					'increase ratio' +': ' + params.value[3] + '<br/> ';
+		}
+	},
+	animation: false,
+	visualMap: [
+	{
+        dimension : 2,
+		min : 0,
+		max : 0.01,
+		precision : 4, 
+		text : ['size: p-value'],
+		textGap: 30,
+		calculable : true, 
+        inRange: {
+            //color: ['#121122', 'rgba(3,4,5,0.4)', 'red'],
+            symbolSize: [5, 20]
+        },
+		handelPosition : 'right', 
+		top : '10%', 
+		right : '3%', 
+    }, {
+		dimension : 3,
+		min : -1, 
+		max : 1, 
+		precision : 2, 
+		text : ['color : \n' + yfeature + ' increase ratio'], 
+		textGap: 30,
+		calculable : true, 
+		inRange : {
+			color : ['green', 'yellow', 'red']
+			
+		}, 
+		bottom : '10%', 
+		right : '3%', 
+		
+	}],
+	toolbox : {
+		show : true,
+		feature : {
+			dataZoom : {
+				show : true
+			},
+			restore : {
+				show : true
+			},
+			saveAsImage : {
+				show : true
+			}
+		}
+	},
+
+	xAxis : [{
+			type : 'value',
+			name : 'sector',
+			nameLocation : 'middle', 
+			nameGap : 25, 
+			scale : true,
+		}
+	],
+	yAxis : [{
+			type : 'value',
+			min : -1, 
+			max : 1, 
+			interval : 0.1, 
+			name : 'Pearson correlation coefficient',
+		}
+	],
+	series : corr_series_gen(option_data.legend, option_data.corr_series),
+	};
+	corrChart.hideLoading();
+    corrChart.setOption(corr_option);
+}
+
+function corr_series_gen(sectors, all_sectors_data){
+	var series = [];
+	var n = sectors.length;
+	var one_sector_option = {
+		name : 'correlation',
+		type : 'scatter',
+		data : all_sectors_data,
+	}
+	series.push(one_sector_option);
+	
+	return series;
+}
+
+
+/** 
+/* figure of correlation cdf
+**/
+function fresh_corr_cdf(option_data){
+corr_cdf_option = {
+	grid: {
+        x: '5%',
+        x2: 150,
+        y: '18%',
+        y2: '10%'
+    },
+	title : {
+		text : '图3：' + xfeature + ' - ' + yfeature + ' pearson correlation cdf',
+	},
+	tooltip : {}, 
+	animation: false,
+	toolbox : {
+		show : true,
+		feature : {
+			dataZoom : {
+				show : true
+			},
+			restore : {
+				show : true
+			},
+			saveAsImage : {
+				show : true
+			}
+		}
+	},
+
+	xAxis : [{
+			type : 'value',
+			name : 'correlation coefficient',
+			nameLocation : 'middle', 
+			min : -1, 
+			max : 1, 
+			interval : 0.1, 
+			nameGap : 25, 
+		}
+	],
+	yAxis : [{
+			type : 'value',
+			min : 0, 
+			max : 1, 
+			interval : 0.1, 
+			name : 'cdf',
+		}
+	],
+	series : [{
+		type : 'line', 
+		data: option_data.corr_cdf,
+	}],
+	};
+    corrCdfChart.setOption(corr_cdf_option);
 }

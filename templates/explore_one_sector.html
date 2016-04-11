@@ -2,7 +2,10 @@
 
 {% block scripts %}
 {{super()}}
-<script src="/static/js/linechart.js"></script>
+<script src="/static/js/one_sector.js"></script>
+// TODO 
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/t/bs-3.3.6/dt-1.10.11,fh-3.1.1/datatables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/t/bs-3.3.6/dt-1.10.11,fh-3.1.1/datatables.min.js"></script>
 {% endblock scripts%}
 
 {% block page_content %}
@@ -14,10 +17,10 @@
 
 	<!-- table that shows some propeties of all sectors -->
 	<div class="row">
-		<div class="  col-md-8">
+		<div class="  col-md-10">
 			 <div class="panel panel-default"> 
-				<div class="panel-heading"><h3>Indeices of each sector</h3></div>
-				<table class="table table-bordered table-striped">
+				<div class="panel-heading"><h3>Indexes of each sector</h3></div>
+				<table class="table table-bordered table-striped" id="infotable">
 					<thead>
 						<tr>
 							<th> 显示 </th>

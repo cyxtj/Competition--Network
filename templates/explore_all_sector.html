@@ -46,9 +46,48 @@
 	<!-- drawing area-->
 	<div class="row">
         <div class="col-md-12">
-            <div id="main" style="height:500px; margin-top:30px"> </div>
+            <div id="main" style="height:700px; margin-top:30px"> </div>
         </div>
 	</div>
+	
+	<!-- drawing area 2-->
+	<div class="row">
+        <div class="col-md-12">
+            <div id="corr-fig" style="height:600px; margin-top:30px"> </div>
+        </div>
+		<div>
+			<h3>图2说明</h3>
+			<p>此图的主要目的是查看各个行业两种特征的相关性大小，p-value等，对各个行业的相关性从数量上有宏观认识。</p>
+			<p>每个点代表一个行业。点的属性包括：
+			<ul>
+				<li> 行业编号：显示在x轴。通常最后两位数相近的行业的内容相近（6401-包装机械，6402-通用零配件，6403-建筑工程机械）<br/>
+				可以发现，邻近行业的各种属性比较类似。
+				<li> Pearson correlation coefficient：显示在y轴，接近-1表示负相关，接近+1表示正相关
+				<li> Pearson correlation p-value：显示为大小。越大说明越有可能不相关，越小说明越不可能不相关。<br/>
+				可以通过右侧的size bar去掉p-value>0.005的点。
+				<li> 图1纵轴特征的增长情况：显示为颜色。红色表示增长，绿色减少，黄色增减不明显或波动。（使用图1纵轴特征和week数的Pearson correlation度量）
+			</ul>
+			<p>
+		</div>
+	</div>
+	
+	<!-- drawing area 3-->
+	<div class="row">
+        <div class="col-md-6">
+            <div id="corr-cdf" style="height:400px; margin-top:30px"> </div>
+        </div >
+		<div class="col-md-6" style="margin-top:10%">
+			<h3>图3说明</h3>
+			<p>此图的主要目的是查看各个行业两种特征的相关性频率累计，量化相关性是否普遍。</p>
+			
+			<p> Pearson correlation coefficient 的累计频率曲线。</p>
+			<p>需要说明的是，累计的方法是：从-1累计到0，从1累计到0。所以看图时从两边向中间看。</p>
+			<p>0 左侧某点坐标(x, y)代表coefficient在[-1, x]之间的概率是y</p>
+			<p>0 右侧某点坐标(x, y)代表coefficient在[x, 1]之间的概率是y</p>
+			<p>可以通过此图看出相关性大的点（|x|>0.3）的频率大小，越大表示特征相关性在各个行业越普遍。</p>
+		</div>
+	</div>
+	
 	
 	<!--change x and y feature to draw-->
 	<div class="row">
