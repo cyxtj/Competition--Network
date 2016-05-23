@@ -55,7 +55,7 @@ main_option = {
 	},
 	animation: false,
 	legend : {
-		show : true,
+		show : false,
 		data : option_data.legend, 
 		left : 'right', 
 		orient : 'vertical', 
@@ -79,7 +79,7 @@ main_option = {
 			}
 		}
 	},
-
+    /*
 	dataZoom: [
         {
             type: 'slider',
@@ -101,6 +101,7 @@ main_option = {
     ],
 	
 	calculable : true,
+    */
 	xAxis : [{
 			type : xaxis_type,
 			name : xfeature,
@@ -196,7 +197,9 @@ corr_option = {
 			return 'Sector: ' + params.value[0] + '<br/> ' +
 					'corr: ' + params.value[1] + '<br/> ' +
 					'p-value' +': ' + params.value[2] + '<br/> ' + 
-					'increase ratio' +': ' + params.value[3] + '<br/> ';
+					'increase ratio' +': ' + params.value[3] + '<br/> ' + 
+                    option_data.sector_idname_dict[params.value[0]] + '<br/> ' + 
+                    option_data.sector_23_dict[params.value[0]].substring(0, 40) + '...<br/> ';
 		}
 	},
 	animation: false,

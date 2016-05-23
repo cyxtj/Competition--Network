@@ -7,9 +7,10 @@
 <!--script src="/static/lib/back-to-top/main.js"></script>-->
 {% endblock scripts%}
 
-{% block styles %}
-{{super()}}
-<link href="/static/lib/back-to-top/style.css" rel="stylesheet">
-{% endblock styles%}
-
 {% block title %}指标可视化{% endblock %}
+
+{% block page_content %}
+<p>
+<h1>点击导航栏里的“One sector”查看某一行业具体情况</h1>
+<h1>点击导航栏里的“All sectors”查看所有行业整体情况</h1>
+{% endblock %}

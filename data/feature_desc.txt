@@ -1,0 +1,15 @@
+##网络相关指标,_
+Engenvalue_adj / Engenvalue_wei,在U_adj / U_wei图中的最大特征值
+diam_T / diam_U,在T/U 图中的直径: 网络中两点之间最短路径长度的最大值。通过抽样获得
+eff_diam_T / eff_diam_U,在T/U图中的有效直径: 比直径更稳定的指标。参考-ANF: a fast and scalable tool for data mining in massive graphs
+cc_U / cc_T,在T/U图中的聚度系数(T图中始终为0，因为T是二部图)。参考- https://en.wikipedia.org/wiki/Clustering_coefficient#Local_clustering_coefficient
+##竞争相关指标,_
+HHI / HHI_C,Herfindahl–Hirschman Index。参考- https://en.wikipedia.org/wiki/Herfindahl_index
+CCI / CCI_C,Comprehensive concentration index (Horvath 1970)。参考- https://en.wikipedia.org/wiki/Market_concentration
+Entropy / Entropy_C,信息熵
+##简单统计指标,_
+HHI_N,对HHI做的一点修正，使其取值在[0， 1](与HHI差别不大)。
+NClick,总click数
+NUser,总用户数
+Revenue,总cost
+CPC,平均CPC，计算方法：Revenue/NClick

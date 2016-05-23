@@ -18,12 +18,12 @@ def index():
 
 @app.route('/all')
 def all_sectors():
-    return render_template('explore_all_sector.html', heads=t.columns, table=t.values, sector23 = sector23_dict, features=sector_week_index.columns)
+    return render_template('explore_all_sector.html', heads=t.columns, table=t.values, sector23 = sector23_dict, features=sector_week_index.columns, feature_desc=feature_desc)
 
 
 @app.route('/one')
 def one_sector():
-    return render_template('explore_one_sector.html', heads=t.columns, table=t.values, sector23 = sector23_dict, features=sector_week_index.columns)
+    return render_template('explore_one_sector.html', heads=t.columns, table=t.values, sector23 = sector23_dict, features=sector_week_index.columns, feature_desc=feature_desc)
 
 @app.route('/get_option_all_sector')
 def get_option_all_sector():
@@ -40,11 +40,13 @@ def get_option_all_sector():
         one_sector = grouped.get_group(sectorid)[[xfeature, yfeature, 'SECTOR', 'WEEK']]
         opt['main_series'][str(sectorid)] = one_sector.values.tolist()
         yi = increase(one_sector.iloc[:, 1])
-        opt['y_increase'][str(sectorid)] = yi
+        opt['y_increase'][str(sectorid)] = round(yi, 4)
         r, p = stats.pearsonr(one_sector.iloc[:, 0], one_sector.iloc[:, 1])
         opt['corr_series'].append([sectorid, round(r, 3), round(p, 4), yi])
 
     opt['corr_cdf'] = corr_cdf(opt['corr_series'])
+    opt['sector_23_dict'] = sector23_dict
+    opt['sector_idname_dict'] = sectoridname_dict
     opt['xfeature'] = xfeature
     opt['yfeature'] = yfeature
     opt['legend'] = [str(i) for i in sectors]
@@ -111,4 +113,4 @@ def corr_cdf(corr_series):
 
 
 if __name__ == '__main__':
-    app.run(debug=Fals)
+    app.run(debug=True)
