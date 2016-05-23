@@ -32,7 +32,7 @@ grouped = sector_week_index.groupby('SECTOR')
 sectors = sector_week_index['SECTOR'].unique().astype(int).tolist()
 sectors = sorted(sectors)
 
-f = open(r'data\feature_desc.txt', 'r')
+f = open(r'data/feature_desc.txt', 'r')
 feature_desc = []
 for l in f:
     [feature, desc] = l.strip().split(',')
