@@ -17,7 +17,7 @@
 
 	<!-- table that shows some propeties of all sectors -->
 	<div class="row">
-		<div class="  col-md-10">
+		<div class="  col-md-12">
 			 <div class="panel panel-default"> 
 				<div class="panel-heading"><h3>Indexes of each sector</h3></div>
 				<table class="table table-bordered table-striped" id="infotable">
@@ -33,7 +33,7 @@
 					</thead>
 					<tbody>
 						{% for row in table %}
-						<tr data-toggle="tooltip" data-placement="top" title="{{sector23[row[0]]}}" data-container="body">
+						<tr data-toggle="tooltip" data-placement="top" title="{{sector23[row[0]]}}" data-container="body" style="max-width:1000px">
 							<td><input type="radio" name="sector-radio" onclick="change_sectorid(this)" id={{row[0]}}></td>
 							<td>{{row[0]}}</td>
 							<td >{{row[1]}}</td>

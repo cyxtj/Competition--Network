@@ -4,11 +4,8 @@ import pandas as pd
 import h5py
 
 
-t = pd.read_excel('data/index-each-sector.xls', 'Sheet1')
-t.SECTOR = t.SECTOR.astype(int)
-for col in t.columns[2:]:
-    t[col] = t[col].round(4)
-t.sort_values(by='SECTOR', inplace=True)
+# sector,NUser,NClick/万,CPC,Revenue/万,sector-name,subsector-names,words
+t = pd.read_csv('data\sector-info.csv', index_col=None, encoding='utf8')
 
 # sector_week_index = pd.read_excel('index-each-sector-week.xlsx', 'Sheet1')
 folder = 'data/week/' 
@@ -24,8 +21,9 @@ sector_week_index['CPC'] = sector_week_index['CPC'].round(2)
 for col in sector_week_index.columns[2:]:
     sector_week_index[col] = sector_week_index[col].round(2)
 
-sector2_3 = pd.read_excel('data/sector23.xlsx', 'Sheet1')
-sector23_dict = {i[1][0]: i[1][2] for i in sector2_3.iterrows()}
+sector2_3 = t[['sector', 'sector-name', 'subsector-names']]
+sector23_dict = {i[1][0]: '\n'.join([i[1][2]])
+        for i in sector2_3.iterrows()}
 sectoridname_dict = {i[1][0]: i[1][1] for i in sector2_3.iterrows()}
 
 grouped = sector_week_index.groupby('SECTOR')
