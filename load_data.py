@@ -5,7 +5,7 @@ import h5py
 
 
 # sector,NUser,NClick/万,CPC,Revenue/万,sector-name,subsector-names,words
-t = pd.read_csv('data\sector-info.csv', index_col=None, encoding='utf8')
+t = pd.read_csv('data/sector-info.csv', index_col=None, encoding='utf8')
 
 # sector_week_index = pd.read_excel('index-each-sector-week.xlsx', 'Sheet1')
 folder = 'data/week/' 
