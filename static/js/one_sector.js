@@ -5,14 +5,15 @@ var yfeature = 'CPC';
 // 基于准备好的dom，初始化echarts图表
 var myChart = echarts.init(document.getElementById('main'));
 var option_data = {
-	legends : '',
-	main_data : []
+    legends : '',
+    main_data : []
 };
-var option = {
-	
-};
+var usertype;
+var option = {};
 
 $(document).ready(function() {
+    usertype = $("#usertype").text();
+    console.log(usertype);
     //$('#infotable').DataTable();
 	$('#infotable').DataTable( {
 		fixedHeader: true
@@ -23,7 +24,7 @@ $(document).ready(function() {
 // and the refresh the figure.
 function request_fresh(scroll){
 	var data = {'sectorid': current_sectorid, 'xfeature': xfeature, 'yfeature': yfeature};
-	$.getJSON('get_option', data, function (option_data, status) {
+	$.getJSON('/get_option_one_sector/'+usertype, data, function (option_data, status) {
         fresh(option_data)
 	});
 	// scroll to figure

@@ -14,19 +14,42 @@ from load_data import *
 
 @app.route('/')
 def index():
-    return render_template('index.html', heads=t.columns, table=t.values, sector23 = sector23_dict, features=sector_week_index.columns)
+    return render_template('index.html')
 
-@app.route('/all')
-def all_sectors():
-    return render_template('explore_all_sector.html', heads=t.columns, table=t.values, sector23 = sector23_dict, features=sector_week_index.columns, feature_desc=feature_desc)
+@app.route('/all/<name>')
+def all_sectors(name):
+    sector_info_table   = D[name]['sector_info_table']  
+    sector_week_index   = D[name]['sector_week_index'] 
+    sector23_dict       = D[name]['sector23_dict']     
+    sectoridname_dict   = D[name]['sectoridname_dict'] 
+    grouped             = D[name]['grouped']           
+    sectors             = D[name]['sectors']            
+    return render_template('explore_all_sector.html', 
+            usertype=name,
+            features=sector_week_index.columns, feature_desc=feature_desc)
 
 
-@app.route('/one')
-def one_sector():
-    return render_template('explore_one_sector.html', heads=t.columns, table=t.values, sector23 = sector23_dict, features=sector_week_index.columns, feature_desc=feature_desc)
+@app.route('/one/<name>')
+def one_sector(name):
+    sector_info_table   = D[name]['sector_info_table']  
+    sector_week_index   = D[name]['sector_week_index'] 
+    sector23_dict       = D[name]['sector23_dict']     
+    sectoridname_dict   = D[name]['sectoridname_dict'] 
+    grouped             = D[name]['grouped']           
+    sectors             = D[name]['sectors']            
+    return render_template('explore_one_sector.html', 
+            usertype=name,
+            heads=sector_info_table.columns, table=sector_info_table.values, sector23 = sector23_dict, 
+            features=sector_week_index.columns, feature_desc=feature_desc)
 
-@app.route('/get_option_all_sector')
-def get_option_all_sector():
+@app.route('/get_option_all_sector/<name>')
+def get_option_all_sector(name):
+    sector_info_table   = D[name]['sector_info_table']  
+    sector_week_index   = D[name]['sector_week_index'] 
+    sector23_dict       = D[name]['sector23_dict']     
+    sectoridname_dict   = D[name]['sectoridname_dict'] 
+    grouped             = D[name]['grouped']           
+    sectors             = D[name]['sectors']            
     print '-------------get_option_all_sector-----------------'
     print request.args.to_dict()
     print '---------------------------------------------------'
@@ -39,10 +62,10 @@ def get_option_all_sector():
     for j, sectorid in enumerate(sectors):
         one_sector = grouped.get_group(sectorid)[[xfeature, yfeature, 'SECTOR', 'WEEK']]
         opt['main_series'][str(sectorid)] = one_sector.values.tolist()
-        yi = increase(one_sector.iloc[:, 1])
-        opt['y_increase'][str(sectorid)] = round(yi, 4)
-        r, p = stats.pearsonr(one_sector.iloc[:, 0], one_sector.iloc[:, 1])
-        opt['corr_series'].append([sectorid, round(r, 3), round(p, 4), yi])
+        y_increase, p = mypearsonr(one_sector.iloc[:, 1], np.arange(one_sector.shape[0]))
+        opt['y_increase'][str(sectorid)] = round(y_increase, 4)
+        r, p = mypearsonr(one_sector.iloc[:, 0], one_sector.iloc[:, 1])
+        opt['corr_series'].append([sectorid, round(r, 3), round(p, 4), y_increase])
 
     opt['corr_cdf'] = corr_cdf(opt['corr_series'])
     opt['sector_23_dict'] = sector23_dict
@@ -53,8 +76,14 @@ def get_option_all_sector():
     opt['title'] = ''
     return json.dumps(opt)
 
-@app.route('/get_option')
-def get_option():
+@app.route('/get_option_one_sector/<name>')
+def get_option(name):
+    sector_info_table   = D[name]['sector_info_table']  
+    sector_week_index   = D[name]['sector_week_index'] 
+    sector23_dict       = D[name]['sector23_dict']     
+    sectoridname_dict   = D[name]['sectoridname_dict'] 
+    grouped             = D[name]['grouped']           
+    sectors             = D[name]['sectors']            
     print '------------get_option one sector------------------'
     print request.args.to_dict()
     print '---------------------------------------------------'
@@ -76,12 +105,14 @@ def get_option():
 def option_dict():
     pass
 
-def increase(x):
-    a = range(x.shape[0])
-    r, p = stats.pearsonr(a, x)
-    return r
+def mypearsonr(x, y):
+    r, p = stats.pearsonr(y, x)
+    if np.isnan(r):
+        r = 0
+    return r, p
 
 def corr_cdf(corr_series):
+    # 图3所需数据，类似于概率累积图
     a = np.array(corr_series)
     corr = a[:, 1]
     n = corr.shape[0]

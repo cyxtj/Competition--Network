@@ -1,40 +1,48 @@
-
-var xfeature = 'userPer_80perClick';
+var xfeature = 'HHI';
 var yfeature = 'CPC';
 // 基于准备好的dom，初始化echarts图表
 var mainChart = echarts.init(document.getElementById('main'));
 var corrChart = echarts.init(document.getElementById('corr-fig'));
 var corrCdfChart = echarts.init(document.getElementById('corr-cdf'));
-
-request_fresh();
 var main_col_index = {'X':0, 'Y':1, 'SECTOR':2, 'WEEK':3};
 var xaxis_type = 'value';
 var yaxis_type = 'value';
 var main_option = {};
 var corr_option = {};
 var corr_cdf_option = {};
+var OPTION = {};
+var usertype;
 
-
+$(document).ready(function() {
+    usertype = $("#usertype").text();
+    request_fresh();
+    
+});
 
 // request the data to show according to : current_sectorid, xfeature, yfeature
 // and the refresh the figure.
 function request_fresh(scroll){
-	mainChart.showLoading();
+	//mainChart.showLoading();
 	var data = {'xfeature': xfeature, 'yfeature': yfeature};
-	$.getJSON('get_option_all_sector', data, function (d, status) {
+	$.getJSON('/get_option_all_sector/'+usertype, data, function (d, status) {
+        OPTION = d;
+        console.log("hello"+xfeature+"----"+yfeature);
         fresh(d);
 		fresh_corr(d);
 		fresh_corr_cdf(d);
+        console.log("hello"+xfeature+"----"+yfeature + "2");
+        // mainChart.hideLoading();
+        // scroll to figure
+        if(scroll==true){
+            window.scroll(0, findPos(document.getElementById("main")));
+        }
 	});
-	mainChart.hideLoading();
-	// scroll to figure
-	if(scroll==true){
-		window.scroll(0, findPos(document.getElementById("main")));
-	}
+    
 }
 
 // refresh the figure accoarding to option_data
 function fresh(option_data){
+    
 main_option = {
 	grid: {
         x: '5%',
@@ -114,13 +122,13 @@ main_option = {
 		}
 	],
 	series : series_gen(option_data.legend, option_data.main_series),
-	};
-	mainChart.hideLoading();
+	};	
     mainChart.setOption(main_option);
 }
 
 
 function series_gen(sectors, all_sectors_data){
+    
 	var series = [];
 	var n = sectors.length;
 	for(var i=0; i<n; i++){
@@ -268,7 +276,6 @@ corr_option = {
 	],
 	series : corr_series_gen(option_data.legend, option_data.corr_series),
 	};
-	corrChart.hideLoading();
     corrChart.setOption(corr_option);
 }
 

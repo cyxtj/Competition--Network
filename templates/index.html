@@ -3,14 +3,33 @@
 {% block scripts %}
 {{super()}}
 <!--<script src="static/lib/echart/echarts.js"></script>-->
-<script src="static/lib/echart/echarts.min.js"></script>
+<script src="/static/lib/echart/echarts.min.js"></script>
 <!--script src="/static/lib/back-to-top/main.js"></script>-->
 {% endblock scripts%}
 
 {% block title %}指标可视化{% endblock %}
 
 {% block page_content %}
-<p>
-<h1>点击导航栏里的“One sector”查看某一行业具体情况</h1>
-<h1>点击导航栏里的“All sectors”查看所有行业整体情况</h1>
+<div class="container" style="width: 500px;">
+    <table class="table table-bordered ">
+        <thead><tr>
+            <th>数据筛选</th>
+            <th>One sector</th>
+            <th>All sectors</th>
+        </tr></thead>
+        <tbody>
+            <tr>
+                <td>所有用户</td>
+                <td><a href="/one/ALL">One sector</a></td>
+                <td><a href="/all/ALL">All sectors</a></td>
+            </tr>
+            <tr>
+                <td>持续出现，总cost前100的用户</td>
+                <td><a href="/one/RU100">One sector</a></td>
+                <td><a href="/all/RU100">All sectors</a></td>
+            </tr>
+        </tbody>
+    </table>
+    
+</div>
 {% endblock %}
