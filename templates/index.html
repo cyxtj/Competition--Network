@@ -3,7 +3,7 @@
 {% block scripts %}
 {{super()}}
 <!--<script src="static/lib/echart/echarts.js"></script>-->
-<script src="/static/lib/echart/echarts.js"></script>
+<script src="/static/lib/echart/echarts.min.js"></script>
 <!--script src="/static/lib/back-to-top/main.js"></script>-->
 {% endblock scripts%}
 
@@ -30,26 +30,6 @@
             </tr>
         </tbody>
     </table>
-    
-</div>
-<hr>
-<div class="container" style="width: 800px;">
-    
-    <h2> Change log </h2>
-    <h3> 2016-07-01 </h3>
-    <p> 
-        <ul>
-            <li>对数据进行筛选，选择了<strong>所有周都有展示的用户，并挑出cost前100</strong>。<br>
-            即每个sector只选择100个用户。原来有191个sector，现在有165个sector（不足100个用户的去掉了）。记这些数据为RU100（representative user 100）。
-            为了对比，在主页上提供了表格可以查看所用数据或者RU100数据。</li>
-            <li>在All sectors页面上增加了一个<strong>热力图</strong>。<br>
-            因为原来的图1直接画点，点多之后相互重叠，看不清楚。
-            所以把点图分成很多小方块，计算每个小方块里的点数，用颜色深浅表示出来。</li>
-            <li>在All sectors页面顶部增加了一组开关，可以选择显示那些图，不刷新页面的情况下可以保持选择。<br>
-            默认显示图4，隐藏图1，图1比较耗时。</li>
-            <li>为了方便显示，增加了一组特征，是原来<strong>特征取对数，用蓝色按钮显示</strong>。</li>
-        </ul>
-    </p>
     
 </div>
 {% endblock %}

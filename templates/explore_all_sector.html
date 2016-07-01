@@ -2,7 +2,6 @@
 
 {% block scripts %}
 {{super()}}
-<script src="/static/js/hist2d.js"></script>
 <script src="/static/js/all_sectors.js"></script>
 {% endblock scripts%}
 
@@ -10,25 +9,6 @@
 {% block page_content %}
 <div class="page-header">
 	<h1 id="usertype">{{usertype}}</h1>
-    <div class="input-group">
-        <span class="text-info"> 图开关 </span><br>
-        <div class="btn-group btn-group" id="figure_switch" data-toggle="buttons">
-            
-            <label class="btn btn-default" onclick="switch_figure('main')">
-                <input type="checkbox"> 图1，散点图
-            </label>	
-            <label class="btn btn-default" onclick="switch_figure('corr')">
-                <input type="checkbox"> 图2，相关系数分布
-            </label>	
-            <label class="btn btn-default" onclick="switch_figure('corr_cdf')">
-                <input type="checkbox"> 图3，相关系数累计
-            </label>	
-            <label class="btn btn-default active" onclick="switch_figure('heatmap')">
-                <input type="checkbox" checked> 图4，热力图
-            </label>	
-            
-        </div>
-    </div>
 </div>
 
 <div class="container-fluid">
@@ -69,8 +49,7 @@
             <div id="main" style="height:700px; margin-top:30px"> </div>
         </div>
 	</div>
-	<hr/>
-    
+	
 	<!-- drawing area 2-->
 	<div class="row">
         <div class="col-md-12">
@@ -91,8 +70,7 @@
 			<p>
 		</div>
 	</div>
-	<hr/>
-    
+	
 	<!-- drawing area 3-->
 	<div class="row">
         <div class="col-md-6">
@@ -109,78 +87,48 @@
 			<p>可以通过此图看出相关性大的点（|x|>0.3）的频率大小，越大表示特征相关性在各个行业越普遍。</p>
 		</div>
 	</div>
-    <hr/>
-    
-	<!-- drawing area heat map-->
-	<div class="row">
-        <div class="col-md-6">
-        <form class="form-horizontal">
-          <div class="control-group">
-            <label class="control-label" for="xbins">#bins on x</label>
-            <div class="controls">
-              <input type="text" id="xbins" placeholder="default 50">
-            </div>
-          </div>
-          <div class="control-group">
-            <label class="control-label" for="ybins">#bins on y</label>
-            <div class="controls">
-              <input type="text" id="ybins" placeholder="default 50">
-            </div>
-          </div>
-          <button class="btn" type="button" onclick="change_bins()">Redraw</button>
-        </form>
-        </div>
-        <div class="col-md-12">
-            <div id="heatmap" style="height:600px; margin-top:30px"> </div>
-        </div>
-	</div>
-	<hr/>
-    
+	
+	
 	<!--change x and y feature to draw-->
 	<div class="row">
         <div class="col-md-12">
 			<div class="input-group">
 				<span  class="text-info"> Feature on x-axis:  </span>
-				<div class="btn-group btn-group-xs" id="xoptionlist" data-toggle="buttons">
+				<div class="btn-group btn-group-xs" data-toggle="buttons">
+					
 					{% for feature in features %}
-                    {% if 'log-' not in feature %}
+					{% if feature == 'HHI'%}
+					<label class="btn btn-default active" id={{feature}} onclick="change_xfeature(this)">
+						<input type="radio" name="xoptions" checked > {{feature}}
+					</label>
+					{% else %}
 					<label class="btn btn-default" id={{feature}} onclick="change_xfeature(this)">
 						<input type="radio" name="xoptions" > {{feature}}
-					</label>	
-                    {% endif %}
-                    {% endfor %}
-                    {% for feature in features %}
-                    {% if 'log-' in feature %}
-					<label class="btn btn-info" id={{feature}} onclick="change_xfeature(this)">
-						<input type="radio" name="xoptions" > {{feature}}
-					</label>	
-                    {% endif %}
+					</label>
+					{% endif %}
 					{% endfor %}
 				</div>
 			</div>
-			<br>
+			</br>
 			<div class="input-group">
 				<span class="text-info"> Feature on y-axis:  </span>
-				<div class="btn-group btn-group-xs" id="yoptionlist" data-toggle="buttons">
+				<div class="btn-group btn-group-xs" data-toggle="buttons">
 					{% for feature in features %}
-                    {% if 'log-' not in feature %}
-					<label class="btn btn-default" id={{feature}} onclick="change_yfeature(this)">
+					{% if feature == 'CPC'%}
+					<label class="btn btn-default active" id={{feature}} onclick="change_yfeature(this)">
+						<input type="radio" name="yoptions" checked > {{feature}}
+					</label>
+					{% else %}
+					<label class="btn btn-default " id={{feature}} onclick="change_yfeature(this)">
 						<input type="radio" name="yoptions" > {{feature}}
-					</label>	
-                    {% endif %}
-                    {% endfor %}
-                    {% for feature in features %}
-                    {% if 'log-' in feature %}
-					<label class="btn btn-info" id={{feature}} onclick="change_yfeature(this)">
-						<input type="radio" name="yoptions" > {{feature}}
-					</label>	
-                    {% endif %}
+					</label>
+					{% endif %}
 					{% endfor %}
 				</div>
 			</div>
 		</div>
 	</div>
-	<br>
+	</br>
 	
 	<!-- table that describ the features that used-->
 	<div class="row">
