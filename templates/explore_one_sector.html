@@ -71,45 +71,51 @@
 	</div>
   
 	<!--change x and y feature to draw-->
+	<!--change x and y feature to draw-->
 	<div class="row">
         <div class="col-md-12">
 			<div class="input-group">
 				<span  class="text-info"> Feature on x-axis:  </span>
-				<div class="btn-group btn-group-xs" data-toggle="buttons">
-					
+				<div class="btn-group btn-group-xs" id="xoptionlist" data-toggle="buttons">
 					{% for feature in features %}
-					{% if feature == 'HHI'%}
-					<label class="btn btn-default active" id={{feature}} onclick="change_xfeature(this)">
-						<input type="radio" name="xoptions" checked > {{feature}}
-					</label>
-					{% else %}
+                    {% if 'log-' not in feature %}
 					<label class="btn btn-default" id={{feature}} onclick="change_xfeature(this)">
 						<input type="radio" name="xoptions" > {{feature}}
-					</label>
-					{% endif %}
+					</label>	
+                    {% endif %}
+                    {% endfor %}
+                    {% for feature in features %}
+                    {% if 'log-' in feature %}
+					<label class="btn btn-info" id={{feature}} onclick="change_xfeature(this)">
+						<input type="radio" name="xoptions" > {{feature}}
+					</label>	
+                    {% endif %}
 					{% endfor %}
 				</div>
 			</div>
-			</br>
+			<br>
 			<div class="input-group">
 				<span class="text-info"> Feature on y-axis:  </span>
-				<div class="btn-group btn-group-xs" data-toggle="buttons">
+				<div class="btn-group btn-group-xs" id="yoptionlist" data-toggle="buttons">
 					{% for feature in features %}
-					{% if feature == 'CPC'%}
-					<label class="btn btn-default active" id={{feature}} onclick="change_yfeature(this)">
-						<input type="radio" name="yoptions" checked > {{feature}}
-					</label>
-					{% else %}
-					<label class="btn btn-default " id={{feature}} onclick="change_yfeature(this)">
+                    {% if 'log-' not in feature %}
+					<label class="btn btn-default" id={{feature}} onclick="change_yfeature(this)">
 						<input type="radio" name="yoptions" > {{feature}}
-					</label>
-					{% endif %}
+					</label>	
+                    {% endif %}
+                    {% endfor %}
+                    {% for feature in features %}
+                    {% if 'log-' in feature %}
+					<label class="btn btn-info" id={{feature}} onclick="change_yfeature(this)">
+						<input type="radio" name="yoptions" > {{feature}}
+					</label>	
+                    {% endif %}
 					{% endfor %}
 				</div>
 			</div>
 		</div>
 	</div>
-	</br>
+	<br>
 	
 	<!-- table that describ the features that used-->
 	<div class="row">

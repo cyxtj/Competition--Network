@@ -12,6 +12,9 @@ var usertype;
 var option = {};
 
 $(document).ready(function() {
+    $("#xoptionlist").children("#" + xfeature)[0].className += " active";
+	$("#yoptionlist").children("#" + yfeature)[0].className += " active";
+	
     usertype = $("#usertype").text();
     console.log(usertype);
     //$('#infotable').DataTable();
