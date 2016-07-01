@@ -26,7 +26,9 @@ for folder, name in folders_names:
             idx = np.bitwise_and(idx, sector_week_index['SECTOR']!=s)
         sector_week_index = sector_week_index[idx]
 
-    for col in sector_week_index.columns[2:]:
+    for col in sector_week_index.columns:
+        sector_week_index['log-'+col] = np.log(sector_week_index[col])\
+                .fillna(0.0001).round(4)
         if col in ['cc_U']:
             continue
         sector_week_index[col] = sector_week_index[col].round(2)
