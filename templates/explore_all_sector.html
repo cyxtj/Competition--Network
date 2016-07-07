@@ -14,17 +14,17 @@
         <span class="text-info"> 图开关 </span><br>
         <div class="btn-group btn-group" id="figure_switch" data-toggle="buttons">
             
-            <label class="btn btn-default" onclick="switch_figure('main')">
+            <label class="btn btn-default" name='main' onclick="switch_figure('main')">
                 <input type="checkbox"> 图1，散点图
             </label>	
-            <label class="btn btn-default" onclick="switch_figure('corr')">
+            <label class="btn btn-default" name='corr' onclick="switch_figure('corr')">
                 <input type="checkbox"> 图2，相关系数分布
             </label>	
-            <label class="btn btn-default" onclick="switch_figure('corr_cdf')">
+            <label class="btn btn-default" name='corr_cdf' onclick="switch_figure('corr_cdf')">
                 <input type="checkbox"> 图3，相关系数累计
             </label>	
-            <label class="btn btn-default active" onclick="switch_figure('heatmap')">
-                <input type="checkbox" checked> 图4，热力图
+            <label class="btn btn-default" name='heatmap' onclick="switch_figure('heatmap')">
+                <input type="checkbox" > 图4，热力图
             </label>	
             
         </div>

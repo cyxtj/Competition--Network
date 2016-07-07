@@ -39,6 +39,7 @@ var figures = {
 $(document).ready(function () {
 	$("#xoptionlist").children("#" + xfeature)[0].className += " active";
 	$("#yoptionlist").children("#" + yfeature)[0].className += " active";
+    $("#figure_switch label[name=heatmap]")[0].className += " active";
 	usertype = $("#usertype").text();
 	request_fresh();
 
@@ -47,16 +48,19 @@ $(document).ready(function () {
 function switch_figure(figure_name) {
 	if (figure_on[figure_name]) {
 		figures[figure_name].clear();
+        figure_on[figure_name] = false;
 	} else {
+        console.log("open figure: "+figure_name);
+        figure_on[figure_name] = true;
 		switch (figure_name) {
 		case 'main':
-			fresh(RESPONSE);
+			fresh(RESPONSE); break;
 		case 'corr':
-			fresh_corr(RESPONSE);
+			fresh_corr(RESPONSE); break;
 		case 'corr_cdf':
-			fresh_corr_cdf(RESPONSE);
+			fresh_corr_cdf(RESPONSE); break;
 		case 'heatmap':
-			fresh_heatmap(RESPONSE);
+			fresh_heatmap(RESPONSE); break;
 		}
 	}
 }
@@ -70,7 +74,7 @@ function request_fresh(scroll) {
 	};
 	$.getJSON('/get_option_all_sector/' + usertype, data, function (d, status) {
 		RESPONSE = d;
-		console.log("hello" + xfeature + "----" + yfeature);
+		//console.log("hello" + xfeature + "----" + yfeature);
 		if (figure_on['main']) {
 			fresh(d);
 		}
@@ -84,7 +88,7 @@ function request_fresh(scroll) {
 			fresh_heatmap(d);
 		}
 
-		console.log("finish plot" + xfeature + "----" + yfeature + "2");
+		//console.log("finish plot" + xfeature + "----" + yfeature + "2");
 		// mainChart.hideLoading();
 		// scroll to figure
 		if (scroll == true) {
@@ -176,6 +180,7 @@ function fresh(option_data) {
 		series : series_gen(option_data.legend, option_data.main_series),
 	};
 	mainChart.setOption(main_option);
+    console.log("refresh figure: main");
 }
 
 function series_gen(sectors, all_sectors_data) {
@@ -325,6 +330,7 @@ function fresh_corr(option_data) {
 		series : corr_series_gen(option_data.legend, option_data.corr_series),
 	};
 	corrChart.setOption(corr_option);
+    console.log("refresh figure: corr");
 }
 
 function corr_series_gen(sectors, all_sectors_data) {
@@ -396,6 +402,7 @@ function fresh_corr_cdf(option_data) {
 		],
 	};
 	corrCdfChart.setOption(corr_cdf_option);
+    console.log("refresh figure: corr_cdf");
 }
 
 function change_bins() {
@@ -430,8 +437,6 @@ function fresh_heatmap(option_data) {
 	var ymaxmin = maxmin_dim_z(series, 1);
 	var xbinsize = (xmaxmin[0] - xmaxmin[1]) / heatmap_param['nbins'][0];
 	var ybinsize = (ymaxmin[0] - ymaxmin[1]) / heatmap_param['nbins'][1];
-	console.log(xmaxmin);
-	console.log(xbinsize);
 
 	var data = hist2d(series, [xbinsize, ybinsize]);
 	var maxcount = 0;
@@ -441,7 +446,6 @@ function fresh_heatmap(option_data) {
 	heatmap_param['maxcount'] = maxcount;
 	var xData = myrange(heatmap_param['nbins'][0], xbinsize, xmaxmin[1]);
 	var yData = myrange(heatmap_param['nbins'][1], ybinsize, ymaxmin[1]);
-	console.log(xData);
 	heat_option = {
 		tooltip : {},
         title : {
@@ -485,4 +489,5 @@ function fresh_heatmap(option_data) {
 		]
 	};
 	heatChart.setOption(heat_option);
+    console.log("refresh figure: heatmap");
 }

@@ -3,7 +3,6 @@ function hist2d(D, binsize){
     // D is like [[x, y], [x, y], ...]
     // binsize is a array of [xbinsize, ybinsize]
     // return the 2d histogram 
-    console.log(D);
     var D2 = []; // make a copy
     for (i = 0; i< D.length; i++){
         D2[i] = [];
@@ -14,8 +13,6 @@ function hist2d(D, binsize){
 }
 function group_count(D){
     // H is a nxn empty matrix to record count
-    console.log("group count input");
-    console.log(D);
     var H = [];
     for (i = 0; i < D.length; i++) { 
         if(H[D[i][0]] == undefined){H[D[i][0]] = [];}
@@ -25,8 +22,6 @@ function group_count(D){
             H[D[i][0]][D[i][1]] = 1;
         }
     }
-    console.log("H:");
-    console.log(H);
     // H2 is a list of [i, j, count], where count > 0
     var H2 = [];
     for (i = 0; i < H.length; i++){
@@ -37,8 +32,6 @@ function group_count(D){
             }
         }
     }
-    console.log("group count output");
-    console.log(H2);
     return H2;
 
 }
