@@ -1,11 +1,12 @@
-var xfeature = 'HHI';
-var yfeature = 'CPC';
+var xfeature = 'log-NUser';
+var yfeature = 'log-Revenue';
 // 基于准备好的dom，初始化echarts图表
 var mainChart = echarts.init(document.getElementById('main'));
-var heatChart = echarts.init(document.getElementById('heatmap'));
-
 var corrChart = echarts.init(document.getElementById('corr-fig'));
 var corrCdfChart = echarts.init(document.getElementById('corr-cdf'));
+var heatChart = echarts.init(document.getElementById('heatmap'));
+var coefChart = echarts.init(document.getElementById('coef-fig'));
+
 var main_col_index = {
 	'X' : 0,
 	'Y' : 1,
@@ -18,28 +19,34 @@ var main_option = {};
 var corr_option = {};
 var corr_cdf_option = {};
 var heat_option = {};
+var coef_option = {};
 var heatmap_param = {
 	nbins : [50, 50]
 };
 var RESPONSE = {};
 var usertype;
+
 var figure_on = {
 	'main' : false,
 	'corr' : false,
 	'corr_cdf' : false,
-	'heatmap' : true
+	'heatmap' : true,
+    'coef' : true,
 };
 var figures = {
 	'main' : mainChart,
 	'corr' : corrChart,
 	'corr_cdf' : corrCdfChart,
-	'heatmap' : heatChart
+	'heatmap' : heatChart,
+    'coef' : coefChart,
 };
 
 $(document).ready(function () {
 	$("#xoptionlist").children("#" + xfeature)[0].className += " active";
 	$("#yoptionlist").children("#" + yfeature)[0].className += " active";
     $("#figure_switch label[name=heatmap]")[0].className += " active";
+    $("#figure_switch label[name=coef]")[0].className += " active";
+
 	usertype = $("#usertype").text();
 	request_fresh();
 
@@ -61,6 +68,8 @@ function switch_figure(figure_name) {
 			fresh_corr_cdf(RESPONSE); break;
 		case 'heatmap':
 			fresh_heatmap(RESPONSE); break;
+        case 'coef':
+			fresh_coef(RESPONSE); break;
 		}
 	}
 }
@@ -73,19 +82,33 @@ function request_fresh(scroll) {
 		'yfeature' : yfeature
 	};
 	$.getJSON('/get_option_all_sector/' + usertype, data, function (d, status) {
+		console.log('status: ' + status);
 		RESPONSE = d;
-		//console.log("hello" + xfeature + "----" + yfeature);
+		console.log("get response: " + xfeature + "----" + yfeature);
 		if (figure_on['main']) {
+			mainChart.showLoading();
 			fresh(d);
+			mainChart.hideLoading();
 		}
 		if (figure_on['corr']) {
+			corrChart.showLoading();
 			fresh_corr(d);
+			corrChart.hideLoading();
 		}
 		if (figure_on['corr_cdf']) {
+			corrCdfChart.showLoading();
 			fresh_corr_cdf(d);
+			corrCdfChart.hideLoading();
 		}
 		if (figure_on['heatmap']) {
+			heatChart.showLoading();
 			fresh_heatmap(d);
+			heatChart.hideLoading();
+		}
+        if (figure_on['coef']) {
+        	coefChart.showLoading();
+			fresh_coef(d);
+			coefChart.hideLoading();
 		}
 
 		//console.log("finish plot" + xfeature + "----" + yfeature + "2");
@@ -218,14 +241,14 @@ function findPos(obj) {
 // when click button on "Feature of x-axis", change the x feature to draw
 function change_xfeature(e) {
 	xfeature = e.getAttribute("id");
-	console.log(xfeature);
+	console.log('change xfeature: '+xfeature);
 	request_fresh(true);
 }
 
 // when click button on "Feature of y-axis", change the y feature to draw
 function change_yfeature(e) {
 	yfeature = e.getAttribute("id");
-	console.log(yfeature);
+	console.log('change yfeature: '+yfeature);
 	request_fresh(true);
 }
 
@@ -321,6 +344,8 @@ function fresh_corr(option_data) {
 		],
 		yAxis : [{
 				type : 'value',
+                nameLocation : 'middle',
+                nameGap : 35,
 				min : -1,
 				max : 1,
 				interval : 0.1,
@@ -389,6 +414,7 @@ function fresh_corr_cdf(option_data) {
 		],
 		yAxis : [{
 				type : 'value',
+                nameLocation : 'middle',
 				min : 0,
 				max : 1,
 				interval : 0.1,
@@ -405,6 +431,9 @@ function fresh_corr_cdf(option_data) {
     console.log("refresh figure: corr_cdf");
 }
 
+/**
+/* figure of heatmap
+ **/
 function change_bins() {
 	heatmap_param['nbins'][0] = parseInt($("#xbins").val());
 	heatmap_param['nbins'][1] = parseInt($("#ybins").val());
@@ -457,6 +486,7 @@ function fresh_heatmap(option_data) {
 		},
 		yAxis : {
 			type : 'category',
+            nameLocation : 'middle',
 			data : yData
 		},
 		visualMap : {
@@ -490,4 +520,102 @@ function fresh_heatmap(option_data) {
 	};
 	heatChart.setOption(heat_option);
     console.log("refresh figure: heatmap");
+}
+
+/**
+/* figure of linear regression coefficient
+ **/
+ // refresh the figure accoarding to option_data
+function fresh_coef(option_data) {
+    
+    $("#coef-median").text('median: ' + option_data.coef_median);
+	coef_option = {
+		grid : {
+			x : '5%',
+			x2 : 150,
+			y : '8%',
+			y2 : '10%'
+		},
+		title : {
+			text : '图5：' + xfeature + ' - ' + yfeature + ' OLS slope of each sector',
+		},
+		tooltip : {
+			formatter : function (params) {
+				return 'Sector: ' + params.value[0] + '<br/> ' +
+				'slope: ' + params.value[1] + '<br/> ' +
+				'intercept' + ': ' + params.value[2] + '<br/> ' +
+				option_data.sector_idname_dict[params.value[0]] + '<br/> ' +
+				option_data.sector_23_dict[params.value[0]].substring(0, 40) + '...<br/> ';
+			}
+		},
+		animation : false,
+		
+		toolbox : {
+			show : true,
+			feature : {
+				dataZoom : {
+					show : true
+				},
+                dataView : {
+                    show : true,
+                    readOnly : false
+                },
+				restore : {
+					show : true
+				},
+				saveAsImage : {
+					show : true
+				}
+			}
+		},
+
+        visualMap : [{
+				dimension : 2,
+				precision : 2,
+				text : ['size: pearson corr coeff'],
+				textGap : 30,
+                min : 0, 
+                max : 1,
+				calculable : true,
+				inRange : {
+					color: ['green', 'yellow', 'red'],
+					//symbolSize : [5, 20]
+				},
+				handelPosition : 'right',
+				top : '10%',
+				right : '3%',
+			}
+		],
+		xAxis : [{
+				type : 'value',
+				name : 'sector',
+				nameLocation : 'middle',
+				nameGap : 25,
+				scale : true,
+			}
+		],
+		yAxis : [{
+				type : 'value',
+                nameLocation : 'middle',
+                nameGap : 35,
+				name : 'OLS slope coefficient',
+			}
+		],
+		series : coef_series_gen(option_data.legend, option_data.coef_series),
+	};
+	coefChart.setOption(coef_option);
+    console.log("refresh figure: coef");
+}
+
+function coef_series_gen(sectors, all_sectors_data) {
+	var series = [];
+	var n = sectors.length;
+	var one_sector_option = {
+		name : 'coefficient',
+		type : 'scatter',
+		data : all_sectors_data,
+	}
+	series.push(one_sector_option);
+
+	return series;
 }

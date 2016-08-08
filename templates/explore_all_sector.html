@@ -25,7 +25,10 @@
             </label>	
             <label class="btn btn-default" name='heatmap' onclick="switch_figure('heatmap')">
                 <input type="checkbox" > 图4，热力图
-            </label>	
+            </label>
+            <label class="btn btn-default" name='coef' onclick="switch_figure('coef')">
+                <input type="checkbox" > 图5，斜率分布
+            </label>            
             
         </div>
     </div>
@@ -136,6 +139,19 @@
 	</div>
 	<hr/>
     
+  
+  <!-- drawing area 5 least square regression slop coefficient-->
+	<div class="row">
+        <div class="col-md-12">
+            <div id="coef-fig" style="height:500px; margin-top:30px"> </div>
+        </div class="col-md-12">
+          <p id="coef-median"></p>
+        <div>
+        </div>
+	</div>
+	<hr/>
+  
+  
 	<!--change x and y feature to draw-->
 	<div class="row">
         <div class="col-md-12">
@@ -181,49 +197,7 @@
 		</div>
 	</div>
 	<br>
-	
+  
 	<!-- table that describ the features that used-->
-	<div class="row">
-        <div class="col-md-12">
-			<table class="table table-bordered table-striped">
-				<thead>
-					<tr><th>Feature name</th><th>Description</th></tr>
-				</thead>
-				<tbody>
-                    {% for feature in feature_desc %}
-					<tr><td>{{feature[0]}}</td> <td>{{feature[1]}}</td></tr>
-					{% endfor %}
-					
-				</tbody>
-			</table>
-            <p>
-            <h3>说明</h3>
-            <h4>##网络相关指标说明：</h4>
-            <ul>
-                <li><dl>
-                    <dt>交易网络T</dt>
-                    <dd>是一个二部图，节点是用户和词，用户 u 和单词w之间有边表示u竞价了w。</dd>
-                <dl></li>
-                <li><dl>
-                    <dt>用户竞争网络U</dt>
-                    <dd>节点是用户，节点 i 和 j 之间有边表示 i 和 j 竞价了相同的单词。</dd>
-                    <dd>按照边有无权重U图有两种：
-                        <ul>
-                            <li>U_adj: 所有边的权重都是1 </li>
-                            <li>U_wei: 权重代表两个用户竞价的相同单词数</li>
-                        </ul>
-                    </dd>
-                </dl></li>
-            </ul>
-            <h4>##行业竞争相关指标说明：</h4>
-            <ul>
-                <li>_C意味着这个指标是使用cost作为计算数据</li>
-                <li>不加_C使用click作为计算数据</li>
-
-            </ul>
-            </p>
-		</div>
-	</div>		
-</div>
-
+  {% include 'FeatureDescription.html' %}
 {% endblock %}

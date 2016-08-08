@@ -9,8 +9,8 @@
 
 import pandas as pd
 import h5py
+from setup import folder
 
-folder = 'indexes/RU100/'
 input_index_fname = folder + 'index-each-sector-week.h5'
 input_col_fname = folder + 'column_names.txt'
 output_sector_fname = folder + 'sector-info.csv'
@@ -31,10 +31,10 @@ sector_index.columns = [u'NUser', u'NClick/万', u'CPC', u'Revenue/万']
 
 # 2.& 3. sector name and subsector names, in file 'sector23.csv'
 # sector-id, sector-name, subsector-name
-sector23 = pd.read_csv('sector23.csv', index_col=0)
+sector23 = pd.read_csv('row/sector23.csv', index_col=0)
 
 # 4. sector top words
-allmonth = pd.read_csv('topwords/all-months-sector-topwords-info.csv', 
+allmonth = pd.read_csv('row/topwords/all-months-sector-topwords-info.csv', 
         names=['words'])
 # lastmonth = pd.read_csv('last-month-sector-topwords-info.csv', 
 #         names=['lastinfo'], index_col=None)

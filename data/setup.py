@@ -1,0 +1,3 @@
+
+folder = 'row/indexes/mobile/'
+

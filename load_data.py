@@ -5,7 +5,9 @@ import h5py
 
 folders_names = [
         ['data/week-RU100/', 'RU100'], 
-        ['data/week/', 'ALL']]
+        ['data/week/', 'ALL'], 
+        ['data/week-pc/', 'pc'], 
+        ['data/week-mobile/', 'mobile']]
 D = {}
 for folder, name in folders_names:
     # Load data
@@ -25,6 +27,10 @@ for folder, name in folders_names:
         for s in sectors_remove:
             idx = np.bitwise_and(idx, sector_week_index['SECTOR']!=s)
         sector_week_index = sector_week_index[idx]
+    if name == 'mobile':
+        print 'mobile delete first 19 weeks'
+        sector_week_index = sector_week_index[sector_week_index['WEEK']>19]
+
 
     for col in sector_week_index.columns:
         sector_week_index['log-'+col] = np.log(sector_week_index[col])\

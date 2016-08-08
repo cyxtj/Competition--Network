@@ -1,0 +1,1 @@
+WEEK,SECTOR,HHI,CCI,Entropy,NClick,NUser,HHI_C,CCI_C,Entropy_C,Revenue,CPC,Eigenvalue_adj,Eigenvalue_wei,NWords,diam_T,diam_U,cc_T,cc_U,eff_diam_T,eff_diam_U,week_start_date,week_end_date,HHI_N,NEqualUser

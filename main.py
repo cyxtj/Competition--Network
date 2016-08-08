@@ -59,6 +59,7 @@ def get_option_all_sector(name):
     opt['main_series'] = {}
     opt['corr_series'] = []
     opt['y_increase'] = {}
+    opt['coef_series'] = []
     for j, sectorid in enumerate(sectors):
         one_sector = grouped.get_group(sectorid)[[xfeature, yfeature, 'SECTOR', 'WEEK']]
         opt['main_series'][str(sectorid)] = one_sector.values.tolist()
@@ -66,7 +67,11 @@ def get_option_all_sector(name):
         opt['y_increase'][str(sectorid)] = round(y_increase, 4)
         r, p = mypearsonr(one_sector.iloc[:, 0], one_sector.iloc[:, 1])
         opt['corr_series'].append([sectorid, round(r, 3), round(p, 4), y_increase])
+        a, b = my_ls_regression(one_sector.iloc[:, 0], one_sector.iloc[:, 1])
+        opt['coef_series'].append( [sectorid, a, abs(r)] )
 
+
+    opt['coef_median'] = np.median(np.array(opt['coef_series'])[:, 1])
     opt['corr_cdf'] = corr_cdf(opt['corr_series'])
     opt['sector_23_dict'] = sector23_dict
     opt['sector_idname_dict'] = sectoridname_dict
@@ -94,6 +99,11 @@ def get_option(name):
     d = sector_week_index[idx]
     opt = dict()
     main_series = d[[xfeature, yfeature, 'WEEK', 'week_start_date', 'week_end_date']].values.tolist()
+    a, b = my_ls_regression(d[xfeature], d[yfeature])
+    print 'a=%i, b=%i'%(a, b)
+    opt['coef'] = [a, b]
+    opt['xmin'] = d[xfeature].min()
+    opt['xmax'] = d[xfeature].max()
     opt['xfeature'] = xfeature
     opt['yfeature'] = xfeature
     opt['main_series'] = main_series
@@ -102,8 +112,6 @@ def get_option(name):
     opt['subtitle'] = 'Subsectors: %s'%sector23_dict[sectorid]
     return json.dumps(opt)
 
-def option_dict():
-    pass
 
 def mypearsonr(x, y):
     r, p = stats.pearsonr(y, x)
@@ -140,6 +148,14 @@ def corr_cdf(corr_series):
     cdf.extend(cdf2)
     return cdf
 
+def my_ls_regression(x, y):
+    # least square regression, return slope
+    # x is data, y is label
+    # x and y are nx1 column vectors
+    A = np.vstack([x, np.ones(x.shape[0])]).T
+    result = np.linalg.lstsq(A, y)
+    a, b = result[0]
+    return round(a, 3), round(b, 3)
 
 
 

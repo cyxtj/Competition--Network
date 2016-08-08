@@ -43,6 +43,35 @@ function fresh(option_data){
     option.title.subtext = option_data.subtitle;
     option.legend.data = option_data.legends;
     option.series[0].data = option_data.main_series; */
+    var a = option_data.coef[0];
+    var b = option_data.coef[1];
+    var markLineOpt = {
+        animation: false,
+        label: {
+            normal: {
+                formatter: 'y = ' + a + 'x + '+ b,
+                textStyle: {
+                    align: 'right'
+                }
+            }
+        },
+        lineStyle: {
+            normal: {
+                type: 'solid',
+                color: 'black',
+                width: 2,
+            
+            }
+        },
+        data: [[{
+            coord: [option_data.xmin, a * option_data.xmin + b],
+            symbol: 'none'
+        }, {
+            coord: [option_data.xmax, a * option_data.xmax + b],
+            symbol: 'none'
+        }]]
+    };
+    
 	option = {
 	title : {
 		text : xfeature + '-' + yfeature + ' each week ' + option_data.title,
@@ -98,7 +127,7 @@ function fresh(option_data){
 			name : '数据1',
 			type : 'line',
 			symbol : 'circle',
-			symbolSize : 8, 
+			symbolSize : 4, 
 
 			itemStyle : {
 				normal : {
@@ -138,6 +167,7 @@ function fresh(option_data){
 				}
 			},
 			data : option_data.main_series,
+            markLine: markLineOpt
 		}, ]
 };
 

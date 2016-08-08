@@ -2,7 +2,7 @@
 
 import pandas
 import numpy as np
-folder = 'indexes/RU100/'
+from setup import folder
 inputfilename = folder + r'index-each-sector-week.xlsx'
 outputfilename = folder + 'index-each-sector-week.h5'
 outputcolumnname = folder + 'column_names.txt'
@@ -27,7 +27,6 @@ t['HHI_N'] = (t['HHI'] - 1/t['NUser'] ) / (1 - 1/t['NUser'])
 t['CCI'] = t['CCI'] * 100
 t['CCI_C'] = t['CCI_C'] * 100
 # t['userPer_80perClick'] = t['userNumber_80percentClick'] / t['NUser'] * 100
-t['logNUser'] = np.log(t['NUser'])
 t['NEqualUser'] = 1/t['HHI']
 
 # add difference information
